@@ -8,6 +8,21 @@ export class DashboardService {
         this.errorHandlingFetch = new ErrorHandlingFetch();
     }
 
+    async deleteTicketById(id: string) {
+        const response = await this.errorHandlingFetch.fetch(
+            `http://localhost:8080/ticket/${id}`,
+            {
+                method: 'DELETE'
+            }
+        );
+
+        if (response.status != 204) {
+            return false;
+        } else {
+            return response.ok;
+        }
+    }
+
     async getAllTickets() {
         const response = await this.errorHandlingFetch.fetch(
             `http://localhost:8080/ticket`,

@@ -1,6 +1,7 @@
 import React from "react";
 import {DashboardService} from "../services/dashboard/DashboardService";
-import {Box, Flex, Heading, Stack, Text, Accordion, AccordionButton, AccordionItem, AccordionIcon, AccordionPanel, Icon} from "@chakra-ui/react";
+import {Box, Flex, Heading, Stack, Text, Accordion, AccordionButton, AccordionItem, AccordionIcon, AccordionPanel, Icon, Button} from "@chakra-ui/react";
+import {MdBuild, MdDelete, MdDeleteForever} from "react-icons/all";
 
 export interface Ticket {
     id?: string;
@@ -17,18 +18,26 @@ interface DashboardState {
 }
 
 export default class Dashboard extends React.Component<DashboardProps, DashboardState> {
+    private dashboardService: DashboardService;
     constructor(props: DashboardProps) {
         super(props);
+        this.dashboardService = new DashboardService();
     }
 
     async receiveTickets() {
         try {
-            const dashboardService = new DashboardService();
-            const tickets = await dashboardService.getAllTickets();
+            const tickets = await this.dashboardService.getAllTickets();
             this.setState({ticketList: tickets});
-        } catch (e) {
+        } catch (ex) {
 
         }
+    }
+    handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) =>  {
+       try {
+           const re = this.dashboardService.deleteTicketById(e.currentTarget.id);
+       } catch (ex) {
+
+       }
     }
 
     async componentDidMount() {
@@ -48,6 +57,11 @@ export default class Dashboard extends React.Component<DashboardProps, Dashboard
                 </h2>
                 <AccordionPanel pb={4}>
                     {ticket.text}
+                    <Stack direction="row" spacing={4}>
+                        <Button id={ticket.id} leftIcon={<MdDeleteForever />} colorScheme="red" variant="solid" onClick={this.handleDelete}>
+                            Delete Ticket
+                        </Button>
+                    </Stack>
                 </AccordionPanel>
             </AccordionItem>
     )
